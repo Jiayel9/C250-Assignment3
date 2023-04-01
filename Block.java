@@ -39,17 +39,35 @@ public class Block {
   * (i.e. they will all be initialized by default)
   */
  public Block(int lvl, int maxDepth) {
-  // int random = gen.nextInt();
-  float random = 0;
-  if (level != maxDepth) {
-   random = gen.nextFloat(1);
+
+  // Initializing random variable
+  double random = 0;
+  this.level = lvl;
+  //If the block can still be subdivided
+  if (lvl < maxDepth) {
+   random = gen.nextDouble(1);
+
+   // On the condition that you do subdivide the block, colour must be null, children is initialized and filled
+   if (random < Math.exp(-0.25 * lvl)) {
+    this.color = null;
+    this.children = new Block[4];
+    for (int i = 0; i < this.children.length; i++) {
+     this.children[i] = new Block(lvl+1, maxDepth);
+    }
+   }
+   //if the block is not being subdivided, it will have a colour
+   else {
+    // leaf condition
+    this.children = new Block[0];
+    this.color = GameColors.BLOCK_COLORS[gen.nextInt(4)];
+   }
   }
-  if (random < Math.exp(-0.25 * level)) {
-   this.smash();
-  }
-  else {
+  // also a leaf condition
+  else if (level == maxDepth) {
+   this.children = new Block[0];
    this.color = GameColors.BLOCK_COLORS[gen.nextInt(4)];
   }
+
  }
 
 
